@@ -1,10 +1,18 @@
-cmake_minimum_required(VERSION 2.8.3)
+CMAKE_MINIMUM_REQUIRED(VERSION 2.8.3)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
+
 project(lidar_euclidean_cluster_detect)
 
 
 #find_package(autoware_build_flags REQUIRED)
 
 #find_package(autoware_msgs REQUIRED)
+
+find_package(Protobuf REQUIRED)
+
+find_package(Boost REQUIRED)
+
 find_package(catkin REQUIRED COMPONENTS
         pcl_ros
         roscpp
@@ -23,7 +31,14 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(OpenMP)
 find_package(OpenCV REQUIRED)
 
+# Protobuf module
+ADD_SUBDIRECTORY(proto)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+
 set(CMAKE_CXX_FLAGS "-O2 -Wall ${CMAKE_CXX_FLAGS}")
+
+set(Protobuf_INCLUDE_DIRS /home/yuqi/lidar_detect/build/lidar_euclidean_cluster_detect/proto)
+set(Protobuf_SRCS /home/yuqi/lidar_detect/build/lidar_euclidean_cluster_detect/proto)
 
 catkin_package(
         CATKIN_DEPENDS
@@ -55,14 +70,21 @@ include_directories(
         ${catkin_INCLUDE_DIRS}
         ${autoware_msgs_INCLUDE_DIRS}
         ${OpenCV_INCLUDE_DIRS}
+        ${Protobuf_INCLUDE_DIRS}
+        ${CMAKE_CURRENT_BINARY_DIR}
 )
-link_directories(${OpenCV_LIBRARY_DIRS})
+link_directories(${OpenCV_LIBRARY_DIRS}
+                ${Protobuf_INCLUDE_DIRS})
 
 #Euclidean Cluster
 add_executable(lidar_euclidean_cluster_detect
         nodes/lidar_euclidean_cluster_detect/lidar_euclidean_cluster_detect.cpp
         nodes/lidar_euclidean_cluster_detect/cluster.cpp
-        nodes/lidar_euclidean_cluster_detect/clusterExt.cpp)
+        nodes/lidar_euclidean_cluster_detect/clusterExt.cpp
+        nodes/lidar_euclidean_cluster_detect/convert2protobuf.cpp
+        ${Protobuf_SRCS})
+
+# TARGET_LINK_LIBRARIES(lidar_euclidean_cluster_detect proto ${Protobuf_LIBRARIES})
 
 #find_package(CUDA)
 find_package(Eigen3 QUIET)
@@ -97,13 +119,16 @@ if (USE_CUDA)
             RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
             )
 
-else ()
-    target_link_libraries(lidar_euclidean_cluster_detect
-            ${OpenCV_LIBRARIES}
-            ${catkin_LIBRARIES}
-            ${YAML_CPP_LIBRARIES})
-
 endif ()
+
+
+TARGET_LINK_LIBRARIES(lidar_euclidean_cluster_detect
+        ${OpenCV_LIBRARIES}
+        ${catkin_LIBRARIES}
+        ${YAML_CPP_LIBRARIES}
+        proto)
+TARGET_LINK_LIBRARIES(lidar_euclidean_cluster_detect
+        ${Protobuf_LIBRARIES})
 
 add_dependencies(lidar_euclidean_cluster_detect
         ${catkin_EXPORTED_TARGETS}

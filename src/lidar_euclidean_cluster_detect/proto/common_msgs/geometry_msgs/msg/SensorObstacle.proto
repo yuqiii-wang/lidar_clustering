@@ -1,0 +1,8 @@
+syntax = "proto2";
+import "PoseArray.proto";
+package custom.SensorObstacle;
+
+message Obstacle
+{
+	repeated custom.geometry_msgs.PoseArray obstacle = 1;
+}

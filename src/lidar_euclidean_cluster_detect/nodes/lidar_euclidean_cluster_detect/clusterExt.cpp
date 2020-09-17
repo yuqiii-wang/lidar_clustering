@@ -107,67 +107,6 @@ int customClusteringExt::clusterByNormalAndDistForLargeSegs(
         }
     }
 
-    // int dead_loop_count = 0;
-    // while ( seg_idx_tmp.size() >= 5 )
-    // {
-    //     dead_loop_count++; 
-    //     if (dead_loop_count > 2000)
-    //     {
-    //         std::cout << "loop too long\t" << out_cluster_indices.size() << "\n";
-    //         break;
-    //     }
-
-    //     auto pit_a = seg_idx_tmp.begin() + 1;
-    //     auto pit_b = seg_idx_tmp.begin();
-    //     pcl::PointIndices pt_idx;
-
-    //     while (pit_a != seg_idx_tmp.end())
-    //     {
-    //         dead_loop_count++; 
-    //         if (dead_loop_count > 2000)
-    //         {
-    //             break;
-    //         }
-
-    //         pcl::PointNormal p_a, p_b;
-    //         p_a.x = in_cloud_ptr->points[*pit_a].x;
-    //         p_a.y = in_cloud_ptr->points[*pit_a].y;
-    //         p_a.z = in_cloud_ptr->points[*pit_a].z;
-    //         p_b.x = in_cloud_ptr->points[*pit_b].x;
-    //         p_b.y = in_cloud_ptr->points[*pit_b].y;
-    //         p_b.z = in_cloud_ptr->points[*pit_b].z;
-
-    //         Eigen::Map<Eigen::Vector3f> point_a_normal = in_cloud_ptr->points[*pit_a].getNormalVector3fMap();
-    //         Eigen::Map<Eigen::Vector3f> point_b_normal = in_cloud_ptr->points[*pit_b].getNormalVector3fMap();
-    //         float abs_normal = std::abs (point_a_normal.dot (point_b_normal));
-    //         float diff_x = p_a.x - p_b.x, diff_y = p_a.y - p_b.y, diff_z = p_a.z - p_b.z ;
-    //         float sqrt_diff = std::sqrt(std::pow(diff_x, 2) + std::pow(diff_y, 2) + std::pow(diff_z, 2));
-
-    //         std::cout << "sqrt_diff " << sqrt_diff << " abs_normal " << abs_normal << "\n";
-    //         if (sqrt_diff < 0.7 && abs_normal > 0.85)
-    //         {
-    //             pt_idx.indices.push_back(*pit_a);
-    //             seg_idx_tmp.erase(pit_a);
-    //             continue;
-    //         }
-
-    //         pit_a++;
-    //     }
-
-    //     pit_b++;
-    //     if(pit_b == seg_idx_tmp.end())
-    //     {
-    //         break;
-    //     }
-    //     if(pit_b == pit_a)
-    //     {
-    //         continue;
-    //     }
-    //     if (pt_idx.indices.size() > 10)
-    //     {
-    //         out_cluster_indices.push_back(pt_idx);
-    //     }
-    // }
     return 0;
 }
 

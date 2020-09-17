@@ -1,0 +1,9 @@
+syntax = "proto2";
+import "Header.proto";
+import "Pose.proto";
+package custom.geometry_msgs;
+message PoseArray
+{
+optional custom.std_msgs.Header header = 1;
+repeated custom.geometry_msgs.Pose  poses = 2;
+}

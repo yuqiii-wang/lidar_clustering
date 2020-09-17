@@ -54,6 +54,7 @@
 #include <vector_map/vector_map.h>
 
 #include <tf/tf.h>
+#include <tf/transform_broadcaster.h>
 
 #include <yaml-cpp/yaml.h>
 
@@ -74,6 +75,8 @@
 
 #include "cluster.h"
 #include "clusterExt.h"
+
+// #include "convert2protobuf.cpp"
 
 #ifdef GPU_CLUSTERING
 
@@ -676,6 +679,8 @@ void segmentByDistance(const pcl::PointCloud<pcl::PointXYZ>::Ptr in_cloud_ptr,
 #endif
       all_clusters.insert(all_clusters.end(), local_clusters.begin(), local_clusters.end());
     }
+
+    // customProtoMsgs::convertSensorObs(all_clusters);
   }
 
   // Clusters can be merged or checked in here
@@ -904,6 +909,12 @@ void velodyne_callback(const sensor_msgs::PointCloud2ConstPtr& in_sensor_cloud)
     autoware_msgs::Centroids centroids;
     autoware_msgs::CloudClusterArray cloud_clusters;
 
+    tf::TransformBroadcaster br;
+    tf::Transform transform;
+    transform.setOrigin( tf::Vector3(0.0, 0.0, 0.0) );
+    transform.setRotation( tf::Quaternion(0, 0, 0, 1) );
+    br.sendTransform(tf::StampedTransform(transform, ros::Time(0), "/velodyne_points", "/map"));
+
     pcl::fromROSMsg(*in_sensor_cloud, *current_sensor_cloud_ptr);
 
     _velodyne_header = in_sensor_cloud->header;
@@ -1018,7 +1029,7 @@ int main(int argc, char **argv)
   }
 
   /* Initialize tuning parameter */
-  private_nh.param("downsample_cloud", _downsample_cloud, false);
+  private_nh.param("downsample_cloud", _downsample_cloud, true);
   ROS_INFO("[%s] downsample_cloud: %d", __APP_NAME__, _downsample_cloud);
   private_nh.param("remove_ground", _remove_ground, true);
   ROS_INFO("[%s] remove_ground: %d", __APP_NAME__, _remove_ground);

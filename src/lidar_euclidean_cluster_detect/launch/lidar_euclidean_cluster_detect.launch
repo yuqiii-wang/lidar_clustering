@@ -3,7 +3,7 @@
   <arg name="points_node" default="/velodyne_points" /><!--CHANGE THIS TO READ WHETHER FROM VSCAN OR POINTS_RAW -->
   <arg name="remove_ground" default="true" />
   <arg name="downsample_cloud" default="true" /> <!-- Apply VoxelGrid Filter with the value given by "leaf_size"-->
-  <arg name="leaf_size" default="0.1" /><!-- Voxel Grid Filter leaf size-->
+  <arg name="leaf_size" default="0.15" /><!-- Voxel Grid Filter leaf size-->
   <arg name="cluster_size_min" default="5" /><!-- Minimum number of points to consider a cluster as valid-->
   <arg name="cluster_size_max" default="1000" /><!-- Maximum number of points to allow inside a cluster-->
   <arg name="sync" default="false" />
