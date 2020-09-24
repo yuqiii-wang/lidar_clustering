@@ -10,6 +10,9 @@ src/utils_depends/*
 *.proto.bak
 pcd_to_pgm
 *build*
+CMakeFiles*
+*.cmake
+Makefile
 
 !Header.proto
 !Pose.proto

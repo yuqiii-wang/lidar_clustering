@@ -37,8 +37,10 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
 set(CMAKE_CXX_FLAGS "-O2 -Wall ${CMAKE_CXX_FLAGS}")
 
-set(Protobuf_INCLUDE_DIRS /home/yuqi/lidar_detect/build/lidar_euclidean_cluster_detect/proto)
-set(Protobuf_SRCS /home/yuqi/lidar_detect/build/lidar_euclidean_cluster_detect/proto)
+# set(Protobuf_INCLUDE_DIRS ${PROJECT_SOURCE_DIR}/proto)
+# set(Protobuf_SRCS ${PROJECT_SOURCE_DIR}/proto)
+
+MESSAGE( ${PROJECT_SOURCE_DIR} )
 
 catkin_package(
         CATKIN_DEPENDS
@@ -81,7 +83,7 @@ add_executable(lidar_euclidean_cluster_detect
         nodes/lidar_euclidean_cluster_detect/lidar_euclidean_cluster_detect.cpp
         nodes/lidar_euclidean_cluster_detect/cluster.cpp
         nodes/lidar_euclidean_cluster_detect/clusterExt.cpp
-        nodes/lidar_euclidean_cluster_detect/convert2protobuf.cpp
+        # nodes/lidar_euclidean_cluster_detect/convert2protobuf.cpp
         ${Protobuf_SRCS})
 
 # TARGET_LINK_LIBRARIES(lidar_euclidean_cluster_detect proto ${Protobuf_LIBRARIES})

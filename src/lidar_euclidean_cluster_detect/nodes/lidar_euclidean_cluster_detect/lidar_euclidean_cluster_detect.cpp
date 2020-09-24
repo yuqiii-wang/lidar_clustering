@@ -45,6 +45,11 @@
 #include <std_msgs/MultiArrayLayout.h>
 #include <std_msgs/MultiArrayDimension.h>
 
+#include <nav_msgs/MapMetaData.h>
+#include <nav_msgs/OccupancyGrid.h>
+#include "std_msgs/Header.h"
+#include "nav_msgs/MapMetaData.h"
+
 #include "autoware_msgs/Centroids.h"
 #include "autoware_msgs/CloudCluster.h"
 #include "autoware_msgs/CloudClusterArray.h"
@@ -76,7 +81,7 @@
 #include "cluster.h"
 #include "clusterExt.h"
 
-// #include "convert2protobuf.cpp"
+#include "convert2protobuf.cpp"
 
 #ifdef GPU_CLUSTERING
 
@@ -143,6 +148,8 @@ tf::StampedTransform *_transform;
 tf::StampedTransform *_velodyne_output_transform;
 tf::TransformListener *_transform_listener;
 tf::TransformListener *_vectormap_transform_listener;
+
+nav_msgs::OccupancyGrid::ConstPtr map_ptr;
 
 tf::StampedTransform findTransform(const std::string &in_target_frame, const std::string &in_source_frame)
 {
@@ -680,7 +687,7 @@ void segmentByDistance(const pcl::PointCloud<pcl::PointXYZ>::Ptr in_cloud_ptr,
       all_clusters.insert(all_clusters.end(), local_clusters.begin(), local_clusters.end());
     }
 
-    // customProtoMsgs::convertSensorObs(all_clusters);
+    customProtoMsgs::convertSensorObs(all_clusters);
   }
 
   // Clusters can be merged or checked in here
@@ -913,7 +920,7 @@ void velodyne_callback(const sensor_msgs::PointCloud2ConstPtr& in_sensor_cloud)
     tf::Transform transform;
     transform.setOrigin( tf::Vector3(0.0, 0.0, 0.0) );
     transform.setRotation( tf::Quaternion(0, 0, 0, 1) );
-    br.sendTransform(tf::StampedTransform(transform, ros::Time(0), "/velodyne_points", "/map"));
+    br.sendTransform(tf::StampedTransform(transform, ros::Time(0), "/velodyne", "/map"));
 
     pcl::fromROSMsg(*in_sensor_cloud, *current_sensor_cloud_ptr);
 
@@ -972,8 +979,18 @@ void velodyne_callback(const sensor_msgs::PointCloud2ConstPtr& in_sensor_cloud)
     publishCloudClusters(&_pub_clusters_message, cloud_clusters, _output_frame, _velodyne_header);
 
     _using_sensor_cloud = false;
+
+    tf::StampedTransform stamped_transform;
+    _transform_listener->lookupTransform( _velodyne_header.frame_id, "/map", ros::Time(0),
+                                          stamped_transform);
   }
 }
+
+void map_callback(const nav_msgs::OccupancyGrid::ConstPtr& msg)
+{
+    map_ptr = msg;
+}
+
 int main(int argc, char **argv)
 {
   // Initialize ROS
@@ -1109,6 +1126,8 @@ int main(int argc, char **argv)
 
   // Create a ROS subscriber for the input point cloud
   ros::Subscriber sub = h.subscribe(points_topic, 1, velodyne_callback);
+
+  ros::Subscriber subMap = h.subscribe("/map", 2, map_callback);
 
   // Spin
   ros::spin();

@@ -102,7 +102,7 @@ void filterOutPoints(const sensor_msgs::PointCloud2ConstPtr& msg)
   transform.setOrigin( tf::Vector3(0.0, 0.0, 0.0) );
   transform.setRotation( tf::Quaternion(0, 0, 0, 1) );
   br.sendTransform(tf::StampedTransform(transform, ros::Time(0), "/velodyne", "/map"));
-  std::cout << "br sent\n";
+
 }
 
 int main(int argc, char **argv)
