@@ -11,6 +11,8 @@
 #include "cluster.h"
 #include "clusterExt.h"
 
+#include "obstaclePositionArray/obstaclePositionArray.h"
+
 
 namespace customProtoMsgs
 {
@@ -34,6 +36,35 @@ namespace customProtoMsgs
                 eachPoint->set_y(polygonPnt.y);
                 eachPoint->set_z(polygonPnt.z);
             }
+        }
+    }
+}
+
+namespace customRostopicMsgs
+{
+    void convertSensorObs(std::vector<ClusterPtr> clusters, obstaclePositionArray::obstaclePositionArray::Ptr out_clusters)
+    {
+        // auto sensorObs = std::make_shared<obstaclePositionArray::obstaclePositionArray>();
+
+        for (auto cluster : clusters)
+        {
+            geometry_msgs::PolygonStamped cluster_polygon = cluster->GetPolygon();
+
+            geometry_msgs::PoseArray poseArray;
+            // auto poseArray = std::make_shared<geometry_msgs::Pose>();
+
+            for (auto polygonPnt : cluster_polygon.polygon.points)
+            {
+                geometry_msgs::Point point;
+                point.x = polygonPnt.x;
+                point.y = polygonPnt.y;
+                point.z = polygonPnt.z;
+
+                geometry_msgs::Pose pose;
+                pose.position = std::move(point);
+                poseArray.poses.push_back(std::move(pose));
+            }
+            out_clusters->PoseArray.push_back(std::move(poseArray));
         }
     }
 }

@@ -17,6 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
         pcl_ros
         roscpp
         geometry_msgs
+        message_generation
         std_msgs
         sensor_msgs
         tf
@@ -25,6 +26,7 @@ find_package(catkin REQUIRED COMPONENTS
         grid_map_cv
         grid_map_msgs
         autoware_msgs
+        message_runtime
         jsk_rviz_plugins
         )
 
@@ -58,6 +60,7 @@ catkin_package(
         jsk_rviz_plugins
         INCLUDE_DIRS include
 )
+find_package(obstaclePositionArray REQUIRED) # custom msg
 
 # Resolve system dependency on yaml-cpp, which apparently does not
 # provide a CMake find_package() module.
@@ -73,6 +76,7 @@ include_directories(
         ${autoware_msgs_INCLUDE_DIRS}
         ${OpenCV_INCLUDE_DIRS}
         ${Protobuf_INCLUDE_DIRS}
+        ${obstaclePositionArray_INCLUDE_DIRS}
         ${CMAKE_CURRENT_BINARY_DIR}
 )
 link_directories(${OpenCV_LIBRARY_DIRS}

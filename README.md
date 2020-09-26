@@ -1,6 +1,23 @@
 # Autoware Perception Module Tutorial
 
-A workable point cloud clustering ros project based on autoware clustering module with dependencies extracted, and with added additional experimental support for protobuf msg and different pcl clustering options. Points filtering by 2d map features are supported as well.
+A workable point cloud clustering ros project based on autoware clustering module with dependencies extracted, and with added additional experimental support for protobuf msg and custom rostopic msg for data transmission, and different pcl clustering options. Points filtering by 2d map features are supported as well. 
+
+## How to Start
+
+1. #### Dependencies
+Upon tested on new machines, here is a list of major components required prior to this ros project installation.
+
+1. jsk
+2. protocol buffer (3.6.1)
+3. people
+
+2. #### Compile
+Just run `catkin_make`
+
+3. #### Launch and Run
+`source devel/setup.bash`
+
+`roslaunch lidar_euclidean_cluster_detect lidar_euclidean_cluster_detect.launch`
 
 ## Code Explained
 
@@ -11,11 +28,11 @@ After some param definitions, the main() runs point_cloud reception callback. Th
 
 1. #### Point removal by distance: 
 
-remove points according to specified distance, that points too faraway are ignored.
+remove points according to a specified distance, that points too faraway are ignored.
 
 2. #### Point removal by voxel filter: 
 
-points that are close and fall in a same voxel are downsampled to only one point.
+points that are close to each other and fall in a same voxel are downsampled to only one point.
 
 3. #### Point removal by lane (disabled): 
 
@@ -61,7 +78,7 @@ However, by varying clustering algos and relevant parameters, too much granulari
 
 1. #### Init Filtering by Map Features: 
 
-This perception module aims to provide guidance on local path planning for navigation. Path planning first finishes with a global path and the planning is through a built map. Local path planning only cares about foreign/temporary objects so that existing scanned objects such as walls can be removed. Temporary objects are key concerns to this perception implementation. This consideration facilitates computation as well as provides accurate clustering results.
+This perception module aims to provide guidance on local path planning for navigation. Path planning first finishes with a global path and the planning is through a built map. Local path planning only cares about foreign/temporary objects so that existing scanned objects such as walls can be removed. Temporary objects are key concerns to this perception implementation. This process facilitates computation as well as provides accurate clustering results. Given this consideration, vehicle's pose in global map transformation is required.
 
 Some concerns include computation efficiency and accurate addressing of point removal.
 

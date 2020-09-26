@@ -103,6 +103,8 @@ ros::Publisher _pub_points_lanes_cloud;
 
 ros::Publisher _pub_detected_objects;
 
+ros::Publisher _pub_detected_objects_customObs;
+
 std_msgs::Header _velodyne_header;
 
 std::string _output_frame;
@@ -686,12 +688,15 @@ void segmentByDistance(const pcl::PointCloud<pcl::PointXYZ>::Ptr in_cloud_ptr,
 #endif
       all_clusters.insert(all_clusters.end(), local_clusters.begin(), local_clusters.end());
     }
-
-    customProtoMsgs::convertSensorObs(all_clusters);
   }
 
+    obstaclePositionArray::obstaclePositionArray::Ptr out_clusters(new obstaclePositionArray::obstaclePositionArray);
+    customRostopicMsgs::convertSensorObs(all_clusters, out_clusters);
+
+    _pub_detected_objects_customObs.publish(out_clusters);
+
   // Clusters can be merged or checked in here
-  //....
+  // ....
   // check for mergable clusters
   std::vector<ClusterPtr> mid_clusters;
   std::vector<ClusterPtr> final_clusters;
@@ -1020,6 +1025,7 @@ int main(int argc, char **argv)
   _pub_points_lanes_cloud = h.advertise<sensor_msgs::PointCloud2>("/points_lanes", 1);
   _pub_clusters_message = h.advertise<autoware_msgs::CloudClusterArray>("/detection/lidar_detector/cloud_clusters", 1);
   _pub_detected_objects = h.advertise<autoware_msgs::DetectedObjectArray>("/detection/lidar_detector/objects", 1);
+  _pub_detected_objects_customObs = h.advertise<obstaclePositionArray::obstaclePositionArray>("/obstacles", 1);
 
   std::string points_topic, gridmap_topic;
 

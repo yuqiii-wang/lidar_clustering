@@ -118,8 +118,8 @@ int customClusteringExt::clusterByNormalAndDist(
     pcl::search::KdTree<pcl::PointXYZ>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZ>);
     pcl::PointCloud <pcl::Normal>::Ptr normals (new pcl::PointCloud <pcl::Normal>);
     std::vector <pcl::PointIndices> clusterList;
-
-    pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne;
+    tree->setInputCloud(in_cloud_ptr);
+    /* pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> ne;
     ne.setInputCloud (in_cloud_ptr);
     ne.setSearchMethod (tree);
     ne.setViewPoint(std::numeric_limits<float>::max(), 
@@ -138,15 +138,15 @@ int customClusteringExt::clusterByNormalAndDist(
     reg.setInputNormals (normals);
     reg.setSmoothnessThreshold (2.0 / 180.0 * M_PI);
     reg.setCurvatureThreshold (1);
-    reg.extract (clusterList);
+    reg.extract (clusterList); */
 
-    // pcl::EuclideanClusterExtraction<pcl::PointXYZ> ec;
-    // ec.setClusterTolerance(0.5);  //
-    // ec.setMinClusterSize(5);
-    // ec.setMaxClusterSize(1000);
-    // ec.setSearchMethod(tree);
-    // ec.setInputCloud(in_cloud_ptr);
-    // ec.extract(clusterList);
+    pcl::EuclideanClusterExtraction<pcl::PointXYZ> ec;
+    ec.setClusterTolerance(0.1);  //
+    ec.setMinClusterSize(25);
+    ec.setMaxClusterSize(2000);
+    ec.setSearchMethod(tree);
+    ec.setInputCloud(in_cloud_ptr);
+    ec.extract(clusterList);
 
     for (auto small_cluster = clusterList.begin(); small_cluster != clusterList.end(); small_cluster++)
     {
